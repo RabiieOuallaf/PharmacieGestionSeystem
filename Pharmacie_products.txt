@@ -1,3 +1,9 @@
-1
-r
-125
+Product [1] name : febrek
+Product [1] code : 125
+Product [1] price : 1250
+Product [2] name : coverselþÂ5ãnC
+Product [2] code : 45
+Product [2] price : 1250
+Product [3] name : joly
+Product [3] code : 65
+Product [3] price : 325
