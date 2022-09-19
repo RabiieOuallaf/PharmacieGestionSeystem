@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-// data structure for products 
+// struct for products
 
 typedef struct // I've used typedef to make my code more readable and easier to debug
 {
@@ -15,10 +15,21 @@ typedef struct // I've used typedef to make my code more readable and easier to 
     char *Time_now; // this var will holde the time of action(like buying or adding)
 
 }Product; // name of struct 
-
+/*
+// struct for brought produtcs
+typedef struct 
+{
+    int code; // this var will hold the product ID
+    char *name; // this var will hold the product name
+    int price; // this var will hold the product price
+    int quantity; // this var will hold the product quantity
+    char *Time_now; // this var will holde the time of action(like buying or adding)
+}BoughtProduct;
+*/
 int count = 0;
 
-Product products[20];
+Product products[500];
+Product broughtProducts[500];
 
 
 // this function is for adding products to the database
@@ -26,49 +37,43 @@ Product products[20];
 void addProduct()
 {
 
-    // asking the user about wich service they wants to use
-
-    int c;
-
-    printf("=== Add product === \n 1 : Add one product ");
-    scanf("%d" , &c);
-
-    if(c != 1){
-
-        printf("Sorry , this service isn't avialble");
-        
-    }else if(c == 1){
-
-        int id;
-        char name[50];
-        int price;
-        int qunantity;
-    /* == Product id == */
-        printf("What is the product id ? : ");
-        scanf("%d" , &id);
-        products[0].code = id;
+    int id;
+    char *name;
+    int price;
+    int qunantity;
 
 
     /* == Product name == */
-        printf("What is the product name ? :");
-        scanf("%s", &name);
-        products[0].name = name;
+    printf("What is the product name ? :");
+    scanf("%s", &name);
+    products[0].name = name;
+
+    /* == Product id == */
+    printf("What is the product id ? : ");
+    scanf("%d" , &id);
+    products[0].code = id;
 
     /* == Product price == */
-        printf("What is the product price ? :");
-        scanf("%d" , &price);
-        products[0].price = price;
+    printf("What is the product price ? :");
+    scanf("%d" , &price);
+    products[0].price = price;
 
     /* == Product Qunatity == */
-        printf("What is the product qunatity ? :");
-        scanf("%d", &qunantity );
-        products[0].quantity = qunantity;
+    printf("What is the product qunatity ? :");
+    scanf("%d", &qunantity );
+    products[0].quantity = qunantity;
     /* == Action Qunatity == */
-        time_t now = time(NULL);
-        products[0].Time_now = ctime(&now);
-    }
+    time_t now = time(NULL);
+    products[0].Time_now = ctime(&now);
+
+    /* == message == */
+
+    printf("The product has been added!");
+
     count++;
 }
+
+
 
 void AddManyProducts(int num)
 {
@@ -77,25 +82,25 @@ void AddManyProducts(int num)
 
     //Product *products = calloc(num, sizeof(Product)); // set an array using calloc so user could controle the size of it
 
-    for(i = 0; i < num; i++){
+    for(i = count; i < num+count; i++){
 
         /*  == products name == */
         char *name; // this var will hold the product name
-        printf("Enter the name of product [%d] :" , i+1); // ask user to type a name 
+        printf("Enter the name of product [%d] : " , i+1); // ask user to type a name 
         scanf("%s" , &name); // push the value the user typed to the var above
         products[i].name = name; // push evreything to struct
 
 
         /*  == products id == */
         int id;
-        printf("Enter the id of product [%d] :", i+1);
+        printf("Enter the id of product [%d] : ", i+1);
         scanf("%d" , &id);
         products[i].code = id;
 
 
         /*  == products price == */
         int price; 
-        printf("Please enter the price of product [%d] :" , i+1);
+        printf("Please enter the price of product [%d] : " , i+1);
         scanf("%d", &price);
         products[i].price = price;
         /* == products qunatity == */
@@ -106,9 +111,9 @@ void AddManyProducts(int num)
         /* == time of action == */
         time_t now = time(NULL);
         products[i].Time_now = ctime(&now);
- 
 
     }
+    printf("The products hase been added !");
 
     count+=num;
 
@@ -124,9 +129,9 @@ void ListOfProductsByPrice(int num)
 
     // Bubble sort
 
-    for(i = 0; i < num; i++){
+    for(i = 0; i < count; i++){
         
-        for(j = 0; j < num; j++){
+        for(j = 0; j < count; j++){
 
             if(products[j].price < products[j+1].price){
 
@@ -142,7 +147,7 @@ void ListOfProductsByPrice(int num)
 
     // to show the sorted version in screen
 
-    for(i = 0; i < num; i++){
+    for(i = 0; i < count; i++){
 
         printf("!== Product N %d ==!\n", i+1);
         printf("Product name : %s\n" , &products[i].name);
@@ -159,20 +164,20 @@ void ListOfProductsByPrice(int num)
 /* !== this function is for sorting products by names !== */
 
 
-void ListOfProductsByName(int n)
+void ListOfProductsByName(int num)
 {
 
     int i,j;
     // Bubble sort
-    for(i = 0; i < n; i++){
+    for(i = 0; i < count; i++){
 
-        for(j = i+1; j < n; j++){
+        for(j = 0; j < count; j++){
 
-            if(strcmp(&products[i].name, &products[j].name) > 0 ){
+            if(strcmp(&products[j].name, &products[j+1].name) > 0 ){
 
                 Product temp = products[j];
-                products[j] = products[i];
-                products[i] = temp;
+                products[j] = products[j+1];
+                products[j+1] = temp;
 
             }
 
@@ -182,7 +187,7 @@ void ListOfProductsByName(int n)
 
     // to show the sorted version in screen
 
-    for(i = 0; i < n; i++){
+    for(i = 0; i < count; i++){
 
         printf("!== Product N %d ==!\n", i+1);
         printf("Product name : %s\n" , &products[i].name);
@@ -236,7 +241,7 @@ void Searching(int n)
                     printf("Product name : %s\n", &products[i].name);
                     printf("Product price : %d\n" , products[i].price);
                     printf("Proudct code : %d\n" , products[i].code);
-                    printf("Type 0 to exit the programm : ");
+                    printf("Type 0 to exit the programm or 1 to continue : ");
                     scanf("%d", &chiox);
                     break;
                 }
@@ -268,16 +273,22 @@ void buy(int n)
             if(products[i].code == codeHolder){
 
                 
-                if(products[i].quantity - quantityHolder > 0){
+                if(products[i].quantity - quantityHolder >= 0){
                     printf("Product with code : %d\n", products[i].code);
                     products[i].quantity = products[i].quantity - quantityHolder;
+                    broughtProducts[i].name = products[i].name;
+                    broughtProducts[i].code = products[i].code;
+                    broughtProducts[i].quantity = products[i].quantity;
+                    broughtProducts[i].price = products[i].price;
+                    time_t now = time(NULL);
+                    broughtProducts[i].Time_now = ctime(&now);
                     printf("Has been bought successfully!\n");
                 
                 }else {
                     printf("Sorry, there no enough quantity of this product!");
                 }
                 
-                printf("Type 0 to exit the programm : \n");
+                printf("Type 0 to exit the programm or 1 to continue : \n");
                 scanf("%d", &chiox);
                 break;
         }
@@ -293,10 +304,10 @@ void buy(int n)
 
 // this function will show the products with quantity less than 3; 
 
-int StockStatus(int n)
+void StockStatus(int num)
 {
     int i;
-    for(i = 0; i < n; i++){
+    for(i = 0; i < num; i++){
 
         if(products[i].quantity < 3){
 
@@ -304,6 +315,29 @@ int StockStatus(int n)
             printf("%s\n", &products[i].name);
 
         }
+
+    }
+
+}
+
+void modifyQuantityOfProduct(int num)
+{
+
+    int productCode,i,newQuantity;
+
+    printf("Enter the product code : ");
+    scanf("%d", &productCode);
+
+    for(i = 0; i < num; i++){
+
+        if(products[i].code == productCode){
+
+            printf("Enter new quantity : ");
+            scanf("%d", &newQuantity);
+
+            products[i].quantity+=newQuantity;
+
+        };
 
     }
 
@@ -319,10 +353,10 @@ void Menu()
 
     int c,num;
 
-    printf("\n=== Pharmacie menu ===\n- Add new product : press 1 \n- Add many new products : press 2  \n- List of products : press 3\n- Search product : press 4\n- Buy product : press 5\n- Stock status : 6\n Chosen service : ");
+    printf("\n=== Pharmacie menu ===\n- Add new product : press 1 \n- Add many new products : press 2  \n- List of products : press 3\n- Search product : press 4\n- Buy product : press 5\n- Stock status : 6\n- Modify quantity of products : 7 Chosen service : ");
     scanf("%d" , &c);
 
-    if(c != 1 && c != 2 && c != 3 && c != 4  && c != 5 && c != 6){ // if users typed a number else 1 2 3 4 printf the following : 
+    if(c != 1 && c != 2 && c != 3 && c != 4  && c != 5 && c != 6 && c != 7){ // if users typed a number else 1 2 3 4 printf the following : 
         
         printf("Sorry, this service isn't avialble");
 
@@ -333,7 +367,7 @@ void Menu()
     }else if(c == 2){ // if user type 2 then call the AddManyProducts() function;
 
         
-        printf("How many product you want to add ?"); // asking user about how many products he wants to add
+        printf("How many product you want to add ? : "); // asking user about how many products he wants to add
         scanf("%d" , &num);
 
         AddManyProducts(num);
@@ -373,6 +407,10 @@ void Menu()
     }else if(c == 6){
 
         StockStatus(num);
+
+    }else if(c == 7){
+        
+        modifyQuantityOfProduct(num);
 
     }
 
