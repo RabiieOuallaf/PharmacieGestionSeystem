@@ -10,8 +10,8 @@ typedef struct // I've used typedef to make my code more readable and easier to 
 
     int code; // this var will hold the product ID
     char name[50]; // this var will hold the product name
-    int price; // this var will hold the product price
-    int TTC;
+    float price; // this var will hold the product price
+    float TTC;
     int quantity; // this var will hold the product quantity
     char *Time_now; // this var will holde the time of action(like buying or adding)
     int zero;
@@ -19,10 +19,10 @@ typedef struct // I've used typedef to make my code more readable and easier to 
 }Product; // name of struct 
 
 int count = 0;
-int broughtCount = 0;
+int boughtCount = 0;
 
 Product products[500];
-Product broughtProducts[500];
+Product boughtProducts[500];
 
 
 
@@ -46,7 +46,7 @@ void addProduct()
 
     /* == Product price == */
     printf("What is the product price ? :");
-    scanf("%d" , &products[0].price);
+    scanf("%f" , &products[0].price);
 
     products[0].TTC = products[0].price + (products[0].price*0.15);
 
@@ -89,7 +89,7 @@ void AddManyProducts(int num)
 
         int price; 
         printf("Please enter the price of product [%d] : " , i+1);
-        scanf("%d", &products[i].price);
+        scanf("%f", &products[i].price);
         products[i].TTC = products[i].price + (products[i].price * 0.15);
 
         /* == products qunatity == */
@@ -142,9 +142,9 @@ void ListOfProductsByPrice(int num)
 
         printf("!== Product N %d ==!\n", i+1);
         printf("Product name : %s\n" , &products[i].name);
-        printf("Product price : %d\n" , products[i].price);
-        printf("Product TTC price : %d\n" , products[i].TTC);
-        printf("Product code :%d\n", products[i].code);
+        printf("Product price : %.2f DH\n" , products[i].price);
+        printf("Product TTC price : %.2f DH\n" , products[i].TTC);
+        printf("Product codeBar :%d\n", products[i].code);
         printf("Product qunatity : %d\n", products[i].quantity);
         printf("Time of buying : %s\n", products[i].Time_now);
 
@@ -169,9 +169,9 @@ void ListOfProductsByName(int num)
 
             if(strcmp(products[j].name, products[j+1].name) <  0 ){
                 i++;
-                Product temp = products[j];
-                products[j] = products[j+1];
-                products[j+1] = temp;
+                Product temp = products[j+1];
+                products[j+1] = products[j];
+                products[j] = temp;
 
             }
             
@@ -189,8 +189,8 @@ void ListOfProductsByName(int num)
 
         printf("!== Product N %d ==!\n", i+1);
         printf("Product name : %s\n" , products[i].name);
-        printf("Product price : %d\n" , products[i].price);
-        printf("Product TTC price : %d\n" , products[i].TTC);
+        printf("Product price : %.2f DH\n" , products[i].price);
+        printf("Product TTC price : %.2f DH\n" , products[i].TTC);
         printf("Product code :%d\n", products[i].code);
         printf("Product qunatity : %d\n", products[i].quantity);
         printf("Time of buying : %s\n", products[i].Time_now);
@@ -221,7 +221,7 @@ void Searching(int n)
 
                     printf("!== Product with code : %d ==!\n", products[i].code);
                     printf("Product name : %s\n", &products[i].name);
-                    printf("Product price : %d\n" , products[i].price);
+                    printf("Product price : %.2f DH\n" , products[i].price);
                     printf("Proudct quantity : %d\n" , products[i].quantity);
                     printf("Type 0 to exit the programm : ");
                     scanf("%d", &chiox);
@@ -238,10 +238,10 @@ void Searching(int n)
 
                     printf("!== Product with quantity : %d ==!\n", products[i].quantity);
                     printf("Product name : %s\n", &products[i].name);
-                    printf("Product price : %d\n" , products[i].price);
-                    printf("Product TTC price : %d" , products[i].TTC);
+                    printf("Product price : %.2f DH\n" , products[i].price);
+                    printf("Product TTC price : %.2f DH" , products[i].TTC);
                     printf("Proudct code : %d\n" , products[i].code);
-                    printf("Type 0 to exit the programm or 1 to continue : ");
+                    printf("Type 0 to exit the programm or 1 to continue : \n Your choice : ");
                     scanf("%d", &chiox);
                     break;
                 }
@@ -276,13 +276,13 @@ void buy(int n)
                 if(products[i].quantity - quantityHolder >= 0){
                     printf("Product with code : %d\n", products[i].code);
                     products[i].quantity = products[i].quantity - quantityHolder;
-                    strcpy(broughtProducts[i].name,products[i].name);
-                    broughtProducts[i].code = products[i].code;
-                    broughtProducts[i].quantity = products[i].quantity;
-                    broughtProducts[i].price = products[i].price;
-                    broughtProducts[i].TTC = products[i].TTC;
+                    strcpy(boughtProducts[i].name,products[i].name);
+                    boughtProducts[i].code = products[i].code;
+                    boughtProducts[i].quantity = products[i].quantity;
+                    boughtProducts[i].price = products[i].price;
+                    boughtProducts[i].TTC = products[i].TTC;
                     time_t now = time(NULL);
-                    broughtProducts[i].Time_now = ctime(&now);
+                    boughtProducts[i].Time_now = ctime(&now);
                     printf("Has been bought successfully!\n");
                 
                 }else {
@@ -297,7 +297,7 @@ void buy(int n)
         
 
     }
-    broughtCount+=quantityHolder;
+    boughtCount+=quantityHolder;
         
     } while (chiox != 0);
     
@@ -358,7 +358,7 @@ void deleteElement(int num)
         if(products[i].code == codeHolder){
 
             products[i] = products[i+1];
-
+        
         };
         count++;
 
@@ -368,34 +368,75 @@ void deleteElement(int num)
 
         printf("Sorry, this item do not exsit");
 
+    }else{
+        
+        printf("The item was deleted !");
+
     };
 
 }
+
+int SortBoughProducts(){
+
+    // Bubble sort
+    int i,j;
+
+    for(i = 0; i < boughtCount; i++ ){
+
+        for(j = 0; j < boughtCount; j++){
+
+            if(boughtProducts[j].price < boughtProducts[j+1].price){
+
+                Product swp = boughtProducts[j];
+                boughtProducts[j] = boughtProducts[j+1];
+                boughtProducts[j+1] = swp;
+
+            }
+
+        }
+
+    }
+
+    return("The max price : %.2f DH" , boughtProducts[0].price);
+
+
+}
+
 // this function will hande the statistique options 
 
 void StatistiqueOptions(int num)
 {
     int chiox,i,sum,exit = 1;
-    printf("Wich service you'll like to use ? : \n 1 : Revenue \n 2 : Brought products  ");
+    printf("Wich service you'll like to use ? : \n 1 : Revenue \n 2 : Bought products \n 3 : Avreage bought products \n 4 : Min price \n Max price : 5");
     scanf("%d", &chiox);
 
     do{
 
         switch(chiox){
-
+            // if user chosed type 1 then do a simple mathimatical operation and return the total revenue of day 
             case 1: 
                 for(i = 0; i < num; i++){
 
-                    sum+=broughtProducts[i].price*broughtCount;
+                    sum+=boughtProducts[i].price*boughtCount;
             
                 }
 
-                printf("Day revenue : %d\n" , sum);
+                printf(" Day revenue : %.2f DH\n" , sum);
                 break;
-
+            // if user chosed 2 then return that variable wich contains the number of bough products 
             case 2:
-                printf(" prodct brought today : %d\n" , broughtCount );
+                printf(" prodct brought today : %d\n" , boughtCount );
                 break;
+            // if user chosed 3 then return the following : 
+            case 3:
+
+                float AveragePrice = boughtProducts[i].price/boughtCount;
+
+                printf(" Average bought price of bought products : %.2f DH \n %  ", AveragePrice);
+
+            case 4:
+                SortBoughProducts();
+
 
         }
     printf("If you want t exit the programm type : 0  \n Your choice : ");
@@ -481,7 +522,7 @@ void Menu()
 
     }else if(c == 9){
 
-        StatistiqueOptions(broughtCount);
+        StatistiqueOptions(boughtCount);
 
     };
 
