@@ -14,7 +14,6 @@ typedef struct // I've used typedef to make my code more readable and easier to 
     float TTC;
     int quantity; // this var will hold the product quantity
     char *Time_now; // this var will holde the time of action(like buying or adding)
-    int zero;
 
 }Product; // name of struct 
 
@@ -22,8 +21,8 @@ int count = 0;
 int boughtCount = 0;
 
 Product products[500];
-Product boughtProducts[500];
 
+Product boughtProducts[500];
 
 
 // this function is for adding products to the database
@@ -59,9 +58,10 @@ void addProduct()
 
     /* == message == */
 
-    printf("The product has been added!");
+    printf("The product with codeBar : %d has been added!" , products[0].code);
 
     count++;
+    boughtCount++;
 }
 
 
@@ -104,9 +104,10 @@ void AddManyProducts(int num)
         products[i].Time_now = ctime(&now);
 
     }
-    printf("The products hase been added !");
+    printf("The products with codeBar: [%d] hase been added !" , products[i].code);
 
     count+=num;
+    boughtCount+=num;
 
 }
 
@@ -165,18 +166,20 @@ void ListOfProductsByName(int num)
     {
         i=0;
 
-        for(j = 0; j < count; j++){
+        for(j = 0; j < count-1; j++){
 
-            if(strcmp(products[j].name, products[j+1].name) <  0 ){
+            if(strcmp(products[j].name, products[j+1].name) >=  0 ){
+    
+                Product temp = products[j];
+                products[j] = products[j+1];
+                products[j+1] = temp;
                 i++;
-                Product temp = products[j+1];
-                products[j+1] = products[j];
-                products[j] = temp;
-
             }
             
 
         }
+
+
 
     }while(i > 0);
         
@@ -203,9 +206,9 @@ void ListOfProductsByName(int num)
 
 void Searching(int n)
 {
-    int codeSearch,chiox,quantitySearch;
+    int codeSearch,chiox,quantitySearch,exit = 3;
 
-    printf("Chose a way of searching : \n 1 : code \n 2 : quantity \n Your choice : ");
+    printf("Chose a way of searching : \n 1 : Search using codeBar \n 2 : Search using quantity \n Your choice : ");
     scanf("%d", &chiox);
     
     do{
@@ -223,12 +226,13 @@ void Searching(int n)
                     printf("Product name : %s\n", &products[i].name);
                     printf("Product price : %.2f DH\n" , products[i].price);
                     printf("Proudct quantity : %d\n" , products[i].quantity);
-                    printf("Type 0 to exit the programm : ");
-                    scanf("%d", &chiox);
-                    break;
+                
                 }
 
             }
+                printf("\n- 1 to continue \n- 2 to go to menu : \n Your choice : ");
+                scanf("%d", &exit);
+            break;
             case 2:
             printf("Enter the quantity  : ");
             scanf("%d", &quantitySearch);
@@ -241,17 +245,16 @@ void Searching(int n)
                     printf("Product price : %.2f DH\n" , products[i].price);
                     printf("Product TTC price : %.2f DH" , products[i].TTC);
                     printf("Proudct code : %d\n" , products[i].code);
-                    printf("Type 0 to exit the programm or 1 to continue : \n Your choice : ");
-                    scanf("%d", &chiox);
                     break;
                 }
 
             }
-            
-                
+                printf("\n- 1 to continue \n- 2 to go to menu : \n Your choice : ");
+                scanf("%d", &exit);
+            break;
         }
 
-    }while(chiox != 0);
+    }while(exit != 2);
     
 
 }
@@ -259,16 +262,16 @@ void Searching(int n)
 void buy(int n)
 {
     int codeHolder,quantityHolder,chiox = 1;
-    do
-    {
-        
         printf("Product code :");
         scanf("%d",&codeHolder);
         printf("Enter quantity : ");
         scanf("%d", &quantityHolder);
 
+    do
+    {
+        
 
-        for(int i = 0; i < n; i++){
+        for(int i = 0; i < boughtCount; i++){
 
             if(products[i].code == codeHolder){
 
@@ -278,7 +281,7 @@ void buy(int n)
                     products[i].quantity = products[i].quantity - quantityHolder;
                     strcpy(boughtProducts[i].name,products[i].name);
                     boughtProducts[i].code = products[i].code;
-                    boughtProducts[i].quantity = products[i].quantity;
+                    boughtProducts[i].quantity = quantityHolder;
                     boughtProducts[i].price = products[i].price;
                     boughtProducts[i].TTC = products[i].TTC;
                     time_t now = time(NULL);
@@ -297,7 +300,7 @@ void buy(int n)
         
 
     }
-    boughtCount+=quantityHolder;
+    
         
     } while (chiox != 0);
     
@@ -376,7 +379,7 @@ void deleteElement(int num)
 
 }
 
-int SortBoughProducts(){
+int SortBoughProductsMax(){
 
     // Bubble sort
     int i,j;
@@ -397,17 +400,60 @@ int SortBoughProducts(){
 
     }
 
-    return("The max price : %.2f DH" , boughtProducts[0].price);
+    return printf("The max price : %.2f DH" , boughtProducts[0].price);
+}
+
+int sortBoughProductsMin(){
+    // Bubble sort
+    int i,j;
+    float min;
+
+    for(i = 0; i < boughtCount; i++ ){
+
+        for(j = 0; j < boughtCount; j++){
+
+            if(boughtProducts[j].price < boughtProducts[j+1].price){
+
+                Product swp = boughtProducts[j];
+                boughtProducts[j] = boughtProducts[j+1];
+                boughtProducts[j+1] = swp;
+
+            }
+            
+
+        }
+        
+
+    }
+
+    return printf("The min price : %.2f DH\n" , boughtProducts[boughtCount-1].price);
 
 
 }
+// this function will return the average price 
+
+int AveragePrice()
+{
+    int i;
+    float sum,average;
+    for(i =0; i < boughtCount;i++){
+
+        sum+=boughtProducts[i].price*boughtProducts[i].quantity;
+
+    }
+    average = sum/boughtCount;
+    
+    return printf(" Average bought price of bought products : %.2f DH \n %  ", average);
+}
+ 
 
 // this function will hande the statistique options 
 
 void StatistiqueOptions(int num)
 {
-    int chiox,i,sum,exit = 1;
-    printf("Wich service you'll like to use ? : \n 1 : Revenue \n 2 : Bought products \n 3 : Avreage bought products \n 4 : Min price \n Max price : 5");
+    int chiox,i,exit = 1;
+    float sum;
+    printf("Wich service you'll like to use ? : \n 1 : Revenue \n 2 : Bought products \n 3 : Avreage bought products \n 4 : max price \n 5 : min price \n Your choice : ");
     scanf("%d", &chiox);
 
     do{
@@ -417,28 +463,34 @@ void StatistiqueOptions(int num)
             case 1: 
                 for(i = 0; i < num; i++){
 
-                    sum+=boughtProducts[i].price*boughtCount;
+                    sum+=boughtProducts[i].price*boughtProducts[i].quantity;
             
                 }
 
                 printf(" Day revenue : %.2f DH\n" , sum);
+
                 break;
             // if user chosed 2 then return that variable wich contains the number of bough products 
             case 2:
                 printf(" prodct brought today : %d\n" , boughtCount );
+
                 break;
             // if user chosed 3 then return the following : 
             case 3:
-
-                float AveragePrice = boughtProducts[i].price/boughtCount;
-
-                printf(" Average bought price of bought products : %.2f DH \n %  ", AveragePrice);
+                AveragePrice();
+                break;
 
             case 4:
-                SortBoughProducts();
+                SortBoughProductsMax();
+                break;
+
+            case 5:
+                sortBoughProductsMin();
+                break;
 
 
         }
+
     printf("If you want t exit the programm type : 0  \n Your choice : ");
     scanf("%d" , &exit);
     }while(exit != 0);
@@ -446,6 +498,7 @@ void StatistiqueOptions(int num)
     
 
 }
+
 
 
 // this function is for shwing the menu for users;
@@ -460,9 +513,10 @@ void Menu()
     printf("\n=== Pharmacie menu ===\n- Add new product : press 1 \n- Add many new products : press 2  \n- List of products : press 3\n- Search product : press 4\n- Buy product : press 5\n- Stock status : 6\n- Modify quantity of products : 7\n- delete an element : 8\n- statistique : 9 \nChosen service : ");
     scanf("%d" , &c);
 
-    if(c != 1 && c != 2 && c != 3 && c != 4  && c != 5 && c != 6 && c != 7 && c != 7 && c != 8 && c != 9){ // if users typed a number else 1 2 3 4 printf the following : 
+    if(c != 1 && c != 2 && c != 3 && c != 4 && c != 5 && c != 6 && c != 7 && c != 8 && c != 9){ // if users typed a number else 1 2 3 4 printf the following : 
         
         printf("Sorry, this service isn't avialble");
+
 
     }else if(c == 1){ // if user type 1 then call the addProduct function
 
@@ -471,7 +525,7 @@ void Menu()
     }else if(c == 2){ // if user type 2 then call the AddManyProducts() function;
 
         
-        printf("How many product you want to add ? : "); // asking user about how many products he wants to add
+        printf("How many products you want to add ? : "); // asking user about how many products he wants to add
         scanf("%d" , &num);
 
         AddManyProducts(num);
@@ -481,7 +535,7 @@ void Menu()
         int chiox;
 
         //ListOfProducts();
-        printf("!== sort list style !== \n Price : 1 \n Name : 2 \n Your choice : ");
+        printf("!== sort list style !== \n Sort list in a descending order : 1 \n Sort list in an alphabetique order : 2 \n Your choice : ");
         scanf("%d", &chiox);
 
         switch (chiox)
@@ -524,6 +578,8 @@ void Menu()
 
         StatistiqueOptions(boughtCount);
 
+    }else{
+        printf("Are you kidding!");
     };
 
 
