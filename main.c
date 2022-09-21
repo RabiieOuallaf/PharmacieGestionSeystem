@@ -319,8 +319,11 @@ void StockStatus(int num)
         if(products[i].quantity < 3){
 
             printf(" !== Products with quantity less than 3 : ==! \n");
-            printf("%s\n", &products[i].name);
+            printf("%s\n", products[i].name);
+            printf("The left quantity : %d" , products[i].quantity);
 
+        }else {
+            printf("There is no product with quantity less than 3");
         }
 
     }
@@ -355,27 +358,28 @@ void modifyQuantityOfProduct(int num)
 void deleteElement(int num)
 {
     int i ,codeHolder,count;
+    printf("Enter the codeBar of product you wants to delete : ");
+    scanf("%d" , &codeHolder);
 
     for(i = 0; i < num; i++){
 
         if(products[i].code == codeHolder){
 
             products[i] = products[i+1];
+            count++;
+        }
         
-        };
-        count++;
-
+        products[500] = products[500-count];
     }
-
-    if(count==0){
-
-        printf("Sorry, this item do not exsit");
-
-    }else{
-        
+    
+    if(count != 0){
         printf("The item was deleted !");
-
+    }else if(count == 0){
+        printf("There is a problem with deleting this item! please check codeBar");
     };
+    
+
+    
 
 }
 
