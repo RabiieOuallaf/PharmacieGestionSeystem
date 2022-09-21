@@ -102,9 +102,11 @@ void AddManyProducts(int num)
 
         time_t now = time(NULL);
         products[i].Time_now = ctime(&now);
-
+        printf("| =================================================================== |\n");
+        printf(" [%s] with codeBar: [%d] hase been added \n with quantity of [%d] and price [%.2f]\n" ,products[i].name, products[i].code,products[i].quantity,products[i].price);
+        printf("| =================================================================== |\n");
     }
-    printf("The products with codeBar: [%d] hase been added !" , products[i].code);
+    
 
     count+=num;
     boughtCount+=num;
@@ -143,7 +145,7 @@ void ListOfProductsByPrice(int num)
 
         printf("!== Product N %d ==!\n", i+1);
         printf("Product name : %s\n" , &products[i].name);
-        printf("Product price : %.2f DH\n" , products[i].price);
+        printf("Product price : %.2f DH   \n" , products[i].price);
         printf("Product TTC price : %.2f DH\n" , products[i].TTC);
         printf("Product codeBar :%d\n", products[i].code);
         printf("Product qunatity : %d\n", products[i].quantity);
@@ -227,6 +229,8 @@ void Searching(int n)
                     printf("Product price : %.2f DH\n" , products[i].price);
                     printf("Proudct quantity : %d\n" , products[i].quantity);
                 
+                }else{
+                    printf("Sorry , this product does not exist ! please try again with different codeBar : \n");
                 }
 
             }
@@ -318,12 +322,17 @@ void StockStatus(int num)
 
         if(products[i].quantity < 3){
 
-            printf(" !== Products with quantity less than 3 : ==! \n");
-            printf("%s\n", products[i].name);
+            printf(" | ==== Products with quantity less than 3 : ===== |\n");
+            printf(" |                         %s                     |\n", products[i].name);
+            printf(" |                                                 |\n");
+            printf(" | ===== ************           ************ ===== |\n");
+        
             printf("The left quantity : %d" , products[i].quantity);
 
         }else {
-            printf("There is no product with quantity less than 3");
+
+            printf("| == There is no products with quantity less than 3 == |\n");
+            
         }
 
     }
@@ -347,6 +356,10 @@ void modifyQuantityOfProduct(int num)
 
             products[i].quantity+=newQuantity;
 
+            printf("Congrats ! quantity has been updated ! \n the new quantity : %d" , products[i].quantity);
+
+        }else{
+            printf("The codeBar you've enterd was not correct , please try again!\n");
         };
 
     }
@@ -357,7 +370,7 @@ void modifyQuantityOfProduct(int num)
 
 void deleteElement(int num)
 {
-    int i ,codeHolder,count;
+    int i ,codeHolder,counter;
     printf("Enter the codeBar of product you wants to delete : ");
     scanf("%d" , &codeHolder);
 
@@ -366,12 +379,12 @@ void deleteElement(int num)
         if(products[i].code == codeHolder){
 
             products[i] = products[i+1];
-            count++;
+            counter++;
+            
         }
         
-        products[500] = products[500-count];
     }
-    
+    count--;
     if(count != 0){
         printf("The item was deleted !");
     }else if(count == 0){
@@ -439,13 +452,13 @@ int sortBoughProductsMin(){
 int AveragePrice()
 {
     int i;
-    float sum,average;
+    float sum,average,sumOfQuantity;
     for(i =0; i < boughtCount;i++){
 
-        sum+=boughtProducts[i].price*boughtProducts[i].quantity;
-
+        sum+=boughtProducts[i].price;
+        sumOfQuantity = boughtProducts[i].quantity;
     }
-    average = sum/boughtCount;
+    average = sum/sumOfQuantity;
     
     return printf(" Average bought price of bought products : %.2f DH \n %  ", average);
 }
@@ -453,9 +466,10 @@ int AveragePrice()
 
 // this function will hande the statistique options 
 
-void StatistiqueOptions(int num)
+int StatistiqueOptions(int num)
 {
     int chiox,i,exit = 1;
+    int Bproducts;
     float sum;
     printf("Wich service you'll like to use ? : \n 1 : Revenue \n 2 : Bought products \n 3 : Avreage bought products \n 4 : max price \n 5 : min price \n Your choice : ");
     scanf("%d", &chiox);
@@ -476,7 +490,12 @@ void StatistiqueOptions(int num)
                 break;
             // if user chosed 2 then return that variable wich contains the number of bough products 
             case 2:
-                printf(" prodct brought today : %d\n" , boughtCount );
+                for(i = 0; i < num; i++){
+
+                    Bproducts+=boughtProducts[i].quantity;
+            
+                }
+                printf("The total bough products : %d" , Bproducts);
 
                 break;
             // if user chosed 3 then return the following : 
